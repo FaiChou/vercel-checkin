@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/v2ex",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/aliyunpan",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
