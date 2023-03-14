@@ -27,3 +27,10 @@ $ vercel deploy
 
 ![img](https://i.imgur.com/i0w6hSd.png)
 
+
+## Or you can setup all by clicking this button
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFaiChou%2Fvercel-checkin)
+
+
+**Don't forget to setup environment variables.**
