@@ -51,7 +51,8 @@ async function sayToBot(message) {
     const r = await fetch(url)
     return await r.json()
   } catch (error) {
-    throw new Error("TG通知失败")
+    console.log(error)
+    // throw new Error("TG通知失败")
   }
 }
 
@@ -61,6 +62,7 @@ export default async function handler(request, response) {
     await sayToBot(message)
     response.status(200).json({ message })
   } catch (error) {
+    await sayToBot(error.message)
     response.status(500).json({
       message: error.message
     })
