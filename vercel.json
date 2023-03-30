@@ -1,12 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/v2ex",
+      "path": "/api/main",
       "schedule": "0 5 * * *"
-    },
-    {
-      "path": "/api/aliyunpan",
-      "schedule": "0 6 * * *"
     }
   ]
 }

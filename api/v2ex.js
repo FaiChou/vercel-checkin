@@ -1,7 +1,11 @@
-async function sign() {
+export async function signV2ex() {
+  const cookie = process.env.V2EX_COOKIE;
+  if (!cookie) {
+    throw new Error("v2ex: 未设置 v2ex cookie")
+  }
   const r = await fetch("https://www.v2ex.com/mission/daily", {
     headers: {
-      Cookie: process.env.V2EX_COOKIE
+      Cookie: cookie
     }
   })
   if (r.status === 200) {
@@ -11,7 +15,7 @@ async function sign() {
     } else {
       const redeemCode = data.match(/<input[^>]*\/mission\/daily\/redeem\?once=(\d+)[^>]*>/)
       if (Array.isArray(redeemCode) && redeemCode.length > 1) {
-        return signMission(redeemCode[1])
+        return signV2exMission(redeemCode[1])
       }
       return "v2ex: 请登录"
     }
@@ -19,9 +23,13 @@ async function sign() {
   throw new Error("v2ex: 请求异常")
 }
 
-async function signMission(code) {
+async function signV2exMission(code) {
+  const cookie = process.env.V2EX_COOKIE;
+  if (!cookie) {
+    throw new Error("v2ex: 未设置 v2ex cookie")
+  }
   const r = await fetch(`https://www.v2ex.com/mission/daily/redeem?once=${code}`, {
-    headers: { Cookie: process.env.V2EX_COOKIE }
+    headers: { Cookie: pcookie }
   })
   if (r.status === 200) {
     const data = await r.text()
@@ -33,28 +41,4 @@ async function signMission(code) {
     }
   }
   throw new Error("v2ex: 请求签到接口失败")
-}
-
-async function sayToBot(message) {
-  const url = `https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage?chat_id=${process.env.TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}`
-  try {
-    const r = await fetch(url)
-    return await r.json()
-  } catch (error) {
-    console.log(error)
-    // throw new Error("TG通知失败")
-  }
-}
-
-export default async function handler(request, response) {
-  try {
-    const message = await sign()
-    await sayToBot(message)
-    response.status(200).json({ message })
-  } catch (error) {
-    await sayToBot(error.message)
-    response.status(500).json({
-      message: error.message
-    })
-  }
 }

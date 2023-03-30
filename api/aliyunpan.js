@@ -5,12 +5,16 @@ const COMMON_HEADER = {
   Referer: 'https://aliyundrive.com/'
 }
 
-async function getToken() {
+async function getAliyunpanToken() {
+  const refreshToken = process.env.ALIYUNPAN_REFRESH_TOKEN
+  if (!refreshToken) {
+    throw new Error("阿里云盘: 未设置 REFRESH TOKEN")
+  }
   const url = "https://auth.aliyundrive.com/v2/account/token"
   const body = {
     grant_type: 'refresh_token',
     'app_id': 'pJZInNHN2dZWk8qg',
-    refresh_token: process.env.ALIYUNPAN_REFRESH_TOKEN
+    refresh_token: refreshToken
   }
   const r = await fetch(url, {
     method: 'POST',
@@ -24,8 +28,8 @@ async function getToken() {
   throw new Error("阿里云盘: 获取 TOKEN 失败")
 }
 
-async function sign() {
-  const token = await getToken()
+export async function signAliyunpan() {
+  const token = await getAliyunpanToken()
   const url = "https://member.aliyundrive.com/v1/activity/sign_in_list"
   const r = await fetch(url, {
     method: 'POST',
@@ -45,26 +49,3 @@ async function sign() {
   throw new Error("阿里云盘: 签到失败")
 }
 
-async function sayToBot(message) {
-  const url = `https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage?chat_id=${process.env.TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}`
-  try {
-    const r = await fetch(url)
-    return await r.json()
-  } catch (error) {
-    console.log(error)
-    // throw new Error("TG通知失败")
-  }
-}
-
-export default async function handler(request, response) {
-  try {
-    const message = await sign()
-    await sayToBot(message)
-    response.status(200).json({ message })
-  } catch (error) {
-    await sayToBot(error.message)
-    response.status(500).json({
-      message: error.message
-    })
-  }
-}
