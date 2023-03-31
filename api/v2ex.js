@@ -29,7 +29,7 @@ async function signV2exMission(code) {
     throw new Error("v2ex: 未设置 v2ex cookie")
   }
   const r = await fetch(`https://www.v2ex.com/mission/daily/redeem?once=${code}`, {
-    headers: { Cookie: pcookie }
+    headers: { Cookie: cookie }
   })
   if (r.status === 200) {
     const data = await r.text()
