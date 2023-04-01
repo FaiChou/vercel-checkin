@@ -33,7 +33,6 @@ async function signV2exMission(code) {
   })
   if (r.status === 200) {
     const data = await r.text()
-    console.log(data)
     if (data.indexOf('每日登录奖励已领取') >= 0) {
       return "v2ex: 签到成功"
     } else {
