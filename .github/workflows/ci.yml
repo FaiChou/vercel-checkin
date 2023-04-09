@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  schedule:
+    - cron: "0 17 * * *"
+  workflow_dispatch: # Add this line to allow manual triggering 
+
+jobs:
+  autogreen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Auto push to trigger a deployment
+        run: |
+          git config --local user.email "faichou.zh@gmail.com"
+          git config --local user.name "FaiChou"
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull --rebase
+          git commit --allow-empty -m "Auto push to trigger a deployment by ci"
+          git push

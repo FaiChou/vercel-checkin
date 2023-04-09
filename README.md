@@ -28,6 +28,11 @@ $ vercel deploy
 ![img](https://i.imgur.com/i0w6hSd.png)
 
 
+#### 4. Github auto commit setup
+
+Go to project `Settings - Actions - General`, set `Workflow permissions` to `Read and write permissions`. Then click save button.
+
+
 ## Or you can setup all by clicking this button
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFaiChou%2Fvercel-checkin)
