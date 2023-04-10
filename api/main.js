@@ -23,7 +23,7 @@ export default async function handler(request, response) {
     await sayToBot(message2)
     response.status(200).json({ message: '签到完成' })
   } catch (error) {
-    await sayToBot(error.message)
+    await sayToBot(`Error: ${error.message}`)
     response.status(500).json({
       message: error.message
     })
