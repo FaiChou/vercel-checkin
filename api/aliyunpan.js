@@ -8,7 +8,7 @@ const COMMON_HEADER = {
 async function getAliyunpanToken() {
   const refreshToken = process.env.ALIYUNPAN_REFRESH_TOKEN
   if (!refreshToken) {
-    throw new Error("阿里云盘: 未设置 REFRESH TOKEN")
+    return "阿里云盘: 未设置 REFRESH TOKEN"
   }
   const url = "https://auth.aliyundrive.com/v2/account/token"
   const body = {
@@ -37,15 +37,38 @@ export async function signAliyunpan() {
       Authorization: 'Bearer ' + token,
       ...COMMON_HEADER
     },
-    body: JSON.stringify({})
+    body: JSON.stringify({"_rx-s": "mobile"})
   })
   if (r.status === 200) {
     const data = await r.json()
     if (!data.success) {
       return "阿里云盘: 签到失败"
     }
-    return "阿里云盘: 签到成功"
+   const reward = await getReward(data, token)
+   if (reward !== "") {
+     return `阿里云盘: 签到成功, 已领取 ${reward}`
+   }
+   return "阿里云盘: 签到成功"
   }
   throw new Error("阿里云盘: 签到失败")
 }
 
+async function getReward(data, token) {
+  const signin_count = data['result']['signInCount']
+  const url = "https://member.aliyundrive.com/v1/activity/sign_in_reward?_rx-s=mobile"
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + token,
+      ...COMMON_HEADER
+    },
+    body: JSON.stringify({ signInDay: signin_count })
+  })
+  if (response.status === 200) {
+    const d = await response.json()
+    if (d.success) {
+      return d.result.description
+    }
+  }
+  return ""
+}

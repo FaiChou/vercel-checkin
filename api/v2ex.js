@@ -1,7 +1,7 @@
 export async function signV2ex() {
   const cookie = process.env.V2EX_COOKIE;
   if (!cookie) {
-    throw new Error("v2ex: 未设置 v2ex cookie")
+    return "v2ex: 未设置 v2ex cookie"
   }
   const r = await fetch("https://www.v2ex.com/mission/daily", {
     headers: {
@@ -26,7 +26,7 @@ export async function signV2ex() {
 async function signV2exMission(code) {
   const cookie = process.env.V2EX_COOKIE;
   if (!cookie) {
-    throw new Error("v2ex: 未设置 v2ex cookie")
+    return "v2ex: 未设置 v2ex cookie"
   }
   const r = await fetch(`https://www.v2ex.com/mission/daily/redeem?once=${code}`, {
     headers: { Cookie: cookie }

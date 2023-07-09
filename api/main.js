@@ -16,11 +16,21 @@ async function sayToBot(message) {
 }
 
 export default async function handler(request, response) {
+  let messages = []
   try {
-    const message1 = await signV2ex()
-    await sayToBot(message1)
-    const message2 = await signAliyunpan()
-    await sayToBot(message2)
+    const promise1 = signV2ex().then((message) => {
+      messages.push(message)
+    }).catch((error) => {
+      messages.push(`Error: ${error.message}`)
+    })
+    const promise2 = signAliyunpan().then((message) => {
+      messages.push(message)
+    }).catch((error) => {
+      messages.push(`Error: ${error.message}`)
+    })
+    await Promise.all([promise1, promise2])
+    const result = messages.reduce((acc, cur) => `${acc}${cur}\n`, "")
+    await sayToBot(result)
     response.status(200).json({ message: '签到完成' })
   } catch (error) {
     await sayToBot(`Error: ${error.message}`)
